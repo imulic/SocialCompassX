@@ -1,0 +1,143 @@
+{
+  "project_info": {
+    "project_number": "763764248603",
+    "firebase_url": "https://socialcompass2-1bd98.firebaseio.com",
+    "project_id": "socialcompass2-1bd98",
+    "storage_bucket": "socialcompass2-1bd98.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763764248603:android:03508e70bddfcd4c",
+        "android_client_info": {
+          "package_name": "com.snipsystems.irfan1.socialcompass2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763764248603-a92qae8gnmhvcfgrbbntc110qsash0d8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.snipsystems.irfan1.socialcompass2",
+            "certificate_hash": "769e8ef6edad3a65cb71da14673fe7cbc479f5ff"
+          }
+        },
+        {
+          "client_id": "763764248603-eeod74lfv4jrk0tk88m04mu81kav34i4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1AN7ONZhfIFt0vSI3PQLqCDcP6VwBkXU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763764248603-eeod74lfv4jrk0tk88m04mu81kav34i4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763764248603:android:03460eb374db53ec",
+        "android_client_info": {
+          "package_name": "com.snipsystems.irfanmulic.compassone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763764248603-1pvcmf1ipq3lnue795a3rn6upencc8l0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.snipsystems.irfanmulic.compassone",
+            "certificate_hash": "60917a6472b0977ad9d320411d0260736222ba70"
+          }
+        },
+        {
+          "client_id": "763764248603-eeod74lfv4jrk0tk88m04mu81kav34i4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1AN7ONZhfIFt0vSI3PQLqCDcP6VwBkXU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763764248603-eeod74lfv4jrk0tk88m04mu81kav34i4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763764248603:android:738807a0e7d33a65",
+        "android_client_info": {
+          "package_name": "com.snipsystems.irfanmulic.socialcompassx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763764248603-808mves6b9ql36n65hskev0hq9oatlh3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.snipsystems.irfanmulic.socialcompassx",
+            "certificate_hash": "60917a6472b0977ad9d320411d0260736222ba70"
+          }
+        },
+        {
+          "client_id": "763764248603-eeod74lfv4jrk0tk88m04mu81kav34i4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1AN7ONZhfIFt0vSI3PQLqCDcP6VwBkXU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763764248603-eeod74lfv4jrk0tk88m04mu81kav34i4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
