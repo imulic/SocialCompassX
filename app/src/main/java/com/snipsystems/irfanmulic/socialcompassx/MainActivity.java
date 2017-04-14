@@ -21,12 +21,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,8 +47,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float currentDegree = 0f;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
-    FirebaseDatabase database;
+    DatabaseReference database;
 
+    private FirebaseUser user;
     private ProgressBar progressBar;
 
     private SensorManager mSensorManager;
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     List<Person> locationsTracked = new ArrayList<Person>();
 
-    Person myLocation = new Person("irfan", 32.65702666004866d, -116.9703197479248d, "San Diego");
+    Person myLocation = new Person("irfan", 32.65702666004866d, -116.9703197479248d, "San Diego","");
 
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
@@ -86,16 +89,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance().getReference();
 
-        populateDefaultLocations();
         setContentView(R.layout.activity_main);
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
 
         //get current user
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        populateDefaultLocations();
+
+        readLocations();
 
         TextView t = (TextView)findViewById(R.id.text1);
         if (user != null)
@@ -113,6 +119,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         };
+
+        Button readLocationsBtn = (Button)findViewById(R.id.button1);
+
+        readLocationsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("ASJA", "Clicked button");
+             //   readLocations();
+            }
+        });
 
         // our compass image
         image = (ImageView) findViewById(R.id.imageViewCompass);
@@ -134,48 +150,52 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2*60*1000,
                 10, mLocationListener);
 
+        //final DatabaseReference locationRef = database.getReference("lastGPSLocation");
 
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("ASJA","trying to read value");
+                Person value = dataSnapshot.getValue(Person.class);
+                Log.i("ASJA","value is "+value);
+            }
 
-
-        final DatabaseReference myRef = database.getReference("lastGPSLocation");
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("ASJA",databaseError.toString());
+            }
+        });
 
         final Handler h1 = new Handler();
         Runnable pushCurrentLocation = new Runnable() {
             @Override
             public void run() {
                 if (myGPSLocation != null)
-                    myRef.setValue(myGPSLocation);
+                    database.child(user.getUid()).setValue(myGPSLocation);
                 h1.postDelayed(this,10000);
             }
         };
 
         h1.post(pushCurrentLocation);
+    }
 
-        myRef.addValueEventListener(new ValueEventListener() {
-            public static final String TAG = "IRFAN";
+    private void clearDefaultLocations(){
 
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Location value = dataSnapshot.getValue(Location.class);
-                Log.d(TAG,"Value is : "+value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "Failed to read value.", databaseError.toException());
-            }
-        });
     }
 
     private void populateDefaultLocations() {
-        Person a = new Person("azra", 32.65702666004866d, -116.9703197479248d, "San Diego");
-        Person b = new Person("asja", 32.6570266600489d, -116.9703197479291d, "San Diego");
+        Person a = new Person("azra", 32.65702666004866d, -116.9703197479248d, "San Diego",user.getUid());
+        Person b = new Person("asja", 32.6570266600489d, -116.9703197479291d, "San Diego",user.getUid());
 
         locationsTracked.add(a);
         locationsTracked.add(b);
 
-        DatabaseReference ref = database.getReference("persons");
-        ref.child("locations").setValue(locationsTracked);
+        database.child("locations").child(user.getUid()).setValue(locationsTracked);
+    }
+
+    private void readLocations(){
+
+
     }
 
     @Override

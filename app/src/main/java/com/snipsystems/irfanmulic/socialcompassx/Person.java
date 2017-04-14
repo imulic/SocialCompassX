@@ -8,12 +8,14 @@ public class Person {
     Double lon;
     Double lat;
     String place;
+    String userid;
 
-    public Person(String name, Double lat, Double lon, String place) {
+    public Person(String name, Double lat, Double lon, String place, String userid) {
         this.name = name;
         this.lon = lon;
         this.lat = lat;
         this.place = place;
+        this.userid = userid;
     }
 
     public String getName() {
@@ -23,6 +25,10 @@ public class Person {
     public Double getLon() {
         return lon;
     }
+
+    public String getUserid() {return userid;}
+
+    public void setUserid(String userid){ this.userid = userid;}
 
     public Double getLat() {
         return lat;
