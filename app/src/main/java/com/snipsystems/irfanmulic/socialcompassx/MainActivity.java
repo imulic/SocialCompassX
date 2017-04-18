@@ -26,6 +26,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -35,8 +40,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
@@ -59,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Location myGPSLocation;
 
     List<Person> locationsTracked = new ArrayList<Person>();
+
+    List<Person> person_locations = new ArrayList<>();
 
     Person myLocation = new Person("irfan", 32.65702666004866d, -116.9703197479248d, "San Diego","");
 
@@ -141,14 +153,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+
 
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2*60*1000,
-                10, mLocationListener);
+/*        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2*60*1000,
+                10, mLocationListener); */
 
         //final DatabaseReference locationRef = database.getReference("lastGPSLocation");
 
@@ -156,8 +166,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.i("ASJA","trying to read value");
-                Person value = dataSnapshot.getValue(Person.class);
-                Log.i("ASJA","value is "+value);
+                String key = dataSnapshot.getKey();
+                Log.i("ASJA","value is "+key);
             }
 
             @Override
@@ -177,11 +187,71 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         };
 
         h1.post(pushCurrentLocation);
+
+        // Refresh myGPSLocation data that we are interested in from the server
+        final Handler h2 = new Handler();
+        Runnable runData = new Runnable() {
+            @Override
+            public void run() {
+
+                Log.i("IRFAN","Refreshing locations");
+                refreshFavoriteLocations();
+                h2.postDelayed(this, 10000);
+            }
+        };
+
+        h2.post(runData);
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
     }
 
     private void clearDefaultLocations(){
 
     }
+
+    protected void refreshFavoriteLocations() {
+
+        String momUrl = "http://localhost:3000/api/important_locations?filter=%7B%22id%22%3A1%7D";
+        String all_locations = "http://01e7e9b9.ngrok.io/api/important_locations";
+
+        JsonArrayRequest jsonRequest = new JsonArrayRequest
+                (Request.Method.GET, all_locations, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        person_locations.clear();
+
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject person = (JSONObject) response
+                                        .get(i);
+
+                                String name = person.getString("name"),
+                                        lon = person.getString("lon"),
+                                        lat = person.getString("lat"),
+                                        city = person.getString("city");
+
+                                person_locations.add(new Person(name, Double.parseDouble(lat), Double.valueOf(lon), city,user.getUid()));
+
+                                //Log.i("PERSON", p.toString());
+                                System.out.println("Response from the server: Name: " + name + "\nCity: " + city + "\nLon" + lon + "\nLat" + lat);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+
+        Volley.newRequestQueue(this).add(jsonRequest);
+    }
+
 
     private void populateDefaultLocations() {
         Person a = new Person("azra", 32.65702666004866d, -116.9703197479248d, "San Diego",user.getUid());
@@ -194,7 +264,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void readLocations(){
-
 
     }
 
